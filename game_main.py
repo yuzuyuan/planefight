@@ -105,29 +105,45 @@ class PlaneGame(object):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 PlaneGame.__game_over()
-            elif event.type==CREATE_ENEMY_EVENT:
-                enemy=Enemy()
+            elif event.type == CREATE_ENEMY_EVENT:
+                # 随机生成不同类型的敌机
+                rand_num = random.random()
+                if rand_num < 0.7:
+                    enemy = Enemy()
+                elif rand_num < 0.95:
+                    enemy = Enemy2()
+                else:
+                    enemy = Enemy3()
                 self.enemy_group.add(enemy)
             elif event.type==HERO_FIRE_EVENT:
                 self.hero.fire()
-        keys_pressed=pygame.key.get_pressed()
-        if keys_pressed[pygame.K_RIGHT]:
-            self.hero.speed=3
-        elif keys_pressed[pygame.K_LEFT]:
-            self.hero.speed=-3
-        else:
-            self.hero.speed=0
+            keys_pressed=pygame.key.get_pressed()
+            if keys_pressed[pygame.K_RIGHT]:
+                self.hero.speed=3
+            elif keys_pressed[pygame.K_LEFT]:
+                self.hero.speed=-3
+            else:
+                self.hero.speed=0
 
     def __check_collide(self):
-        hits=pygame.sprite.groupcollide(self.hero.bullets,self.enemy_group,True,False)
-        for bullet,enemies in hits.items():
+        # 1. 子弹摧毁敌机
+        hits = pygame.sprite.groupcollide(self.hero.bullets, self.enemy_group, True, False)
+        for bullet, enemies in hits.items():
             for enemy in enemies:
                 if not enemy.dying:
-                    enemy.die()
-                    self.score+=1
+                    enemy.hit() # 调用新的hit方法
                     game.explosion_sound.play()
-        enemies=pygame.sprite.spritecollide(self.hero,self.enemy_group,True)
-        if len(enemies)>0:
+                    # 根据敌人类型加分
+                    if isinstance(enemy, Enemy3):
+                        self.score += 20
+                    elif isinstance(enemy, Enemy2):
+                        self.score += 8
+                    else:
+                        self.score += 1
+
+        # 2. 敌机撞毁英雄
+        enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, True)
+        if len(enemies) > 0:
             self.hero.die()
     def __update_sprites(self):
         self.back_group.update()

@@ -35,6 +35,7 @@ class Enemy(GameSprite):
         self.rect.x=random.randint(0,SCREEN_RECT.width-self.rect.width)
         self.rect.bottom=0
         self.dying=False
+        self.hp =1
         self.animation_frames = [
             pygame.image.load("./images/images/enemy1_down1.png").convert_alpha(),
             pygame.image.load("./images/images/enemy1_down2.png").convert_alpha(),
@@ -63,6 +64,10 @@ class Enemy(GameSprite):
 
     def __del__(self):
         self.kill()
+    def hit(self):
+        self.hp-=1
+        if self.hp <=0:
+            self.die()
 
 class Hero(GameSprite):
     def __init__(self):
@@ -120,3 +125,43 @@ class Bullet(GameSprite):
 
     def __del__(self):
         pass
+class Enemy2(Enemy):
+    def __init__(self):
+        GameSprite.__init__(self, "./images/images/enemy2.png")
+
+        self.speed = random.randint(1, 2)
+        self.rect.x = random.randint(0, SCREEN_RECT.width - self.rect.width)
+        self.rect.bottom = 0
+        self.hp = 8
+        self.dying = False
+        self.animation_frames = [
+            pygame.image.load("./images/images/enemy2_down1.png").convert_alpha(),
+            pygame.image.load("./images/images/enemy2_down2.png").convert_alpha(),
+            pygame.image.load("./images/images/enemy2_down3.png").convert_alpha(),
+            pygame.image.load("./images/images/enemy2_down4.png").convert_alpha()
+        ]
+        self.animation_index = 0
+        self.animation_timer = 0
+
+
+class Enemy3(Enemy):
+    def __init__(self):
+
+        GameSprite.__init__(self, "./images/images/enemy3_n1.png")
+        
+
+        self.speed = 1
+        self.rect.x = random.randint(0, SCREEN_RECT.width - self.rect.width)
+        self.rect.bottom = 0
+        self.hp = 20
+        self.dying = False
+        self.animation_frames = [
+            pygame.image.load("./images/images/enemy3_down1.png").convert_alpha(),
+            pygame.image.load("./images/images/enemy3_down2.png").convert_alpha(),
+            pygame.image.load("./images/images/enemy3_down3.png").convert_alpha(),
+            pygame.image.load("./images/images/enemy3_down4.png").convert_alpha(),
+            pygame.image.load("./images/images/enemy3_down5.png").convert_alpha(),
+            pygame.image.load("./images/images/enemy3_down6.png").convert_alpha()
+        ]
+        self.animation_index = 0
+        self.animation_timer = 0
